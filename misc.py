@@ -110,21 +110,8 @@ def _get_real_easter_egg_text(server, session):
     :param session: Session
     :return: encoded easter egg
     """
-    eggfile = get_easter_egg_content(server, session)
-    lines = _convert_contents_to_non_empty_list(eggfile)
-    # Exclude on spaces and ellipses, we only want the encoded text.
-    exclusions = [' ', '...']
-    for line in lines:
-        # Skip excluded lines, return only the easter egg.
-        if any(skip in line for skip in exclusions):
-            continue
-        return line
-
-
-def _convert_contents_to_non_empty_list(text):
-    lines = text.split('\r\n')
-    return filter(None, lines)
-
+    eggfile = get_easter_egg_content(server, session).decode('utf-8').split('\n')
+    return next(line.strip() for line in eggfile if '==' in line)
 
 def decrypt_easter_egg(server, session):
     """
@@ -135,7 +122,7 @@ def decrypt_easter_egg(server, session):
     print('Fetching text from eastere.gg, hopefully...')
     egg = _get_real_easter_egg_text(server, session)
     print('Easter egg text: {}'.format(egg))
-    partial = b64decode(egg)
+    partial = b64decode(egg).decode('utf-8')
     print('After Base 64 decoding: {}'.format(partial))
     actual = codecs.encode(partial, 'rot_13')
     print('After ROT13 decoding: {}'.format(actual))

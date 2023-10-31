@@ -38,6 +38,8 @@ def send_feedback(server, session, payload):
     :param session: Session
     :param payload: feedback content
     """
+    captcha = session.get('{}/rest/captcha'.format(server)).json()
+    payload.update({"captchaId":captcha.get('captchaId'),"captcha":captcha.get('answer')})
     submit = session.post('{}/api/Feedbacks'.format(server),
                           headers={'Content-type': 'application/json'},
                           data=json.dumps(payload))
@@ -47,21 +49,21 @@ def send_feedback(server, session, payload):
 
 def submit_zero_star_feedback(server, session):
     print('Submitting zero star feedback...'),
-    payload = {'comment': 'welp', 'rating': 0}
+    payload = {'comment': 'welp', 'UserId': 2, 'rating': 0}
     send_feedback(server, session, payload)
     print('Success.')
 
 
 def submit_xss4_feedback(server, session):
     print('Submitting XSS4 exploit as feedback comment...'),
-    payload = {'comment': '<</b>script>alert("XSS4")<</b>/script>'}
+    payload = {'comment': '<</b>script>alert("XSS4")<</b>/script>', 'UserId': 2, 'rating':'1'}
     send_feedback(server, session, payload)
     print('Success.')
 
 
 def inform_shop_of_problem_libraries(server, session):
     print('Submitting feedback on bad dependencies...'),
-    payload = {'comment': 'z85 0.0\nsequelize 1.7'}
+    payload = {'comment': 'z85 0.0\nsequelize 1.7', 'UserId': 2, 'rating':'1'}
     send_feedback(server, session, payload)
     print('Success.')
 
@@ -69,7 +71,7 @@ def inform_shop_of_problem_libraries(server, session):
 def submit_feedback_as_another_user(server):
     print('Submitting feedback from admin account as userid 2...'),
     session = get_admin_session(server)
-    payload = {'comment': 'nyah nyah', 'UserId': 2}
+    payload = {'comment': 'nyah nyah', 'UserId': 2, 'rating': '1'}
     send_feedback(server, session, payload)
     print('Success.')
 
