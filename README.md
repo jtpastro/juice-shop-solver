@@ -7,7 +7,7 @@
 # Summary
 
 A collection of Python 3 functions for solving the various challenges in the 
-[OWASP Juice Shop (https://gothub.com/juiceshop/juice-shop) using 
+[OWASP Juice Shop](https://github.com/juiceshop/juice-shop) using 
 [Requests](http://docs.python-requests.org/en/master/) and [Selenium 3.0](https://pypi.python.org/pypi/selenium).
 
 Based on [incognitjoe's solver](https://github.com/incognitjoe/juice-shop-solver) and being adapted to target versinho v15.2.1 of O2ASP Juice Shop.
